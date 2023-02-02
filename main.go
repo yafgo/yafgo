@@ -1,10 +1,22 @@
 package main
 
 import (
-	"fmt"
+	"github.com/yafgo/framework/facades"
+	"github.com/yafgo/yafgo/bootstrap"
 )
 
 func main() {
-	//code here
-	fmt.Println("hello world")
+
+	// This bootstraps the framework and gets it ready for use.
+	bootstrap.Boot()
+
+	// Start http server by facades.Route.
+	go func() {
+		if err := facades.Route.Run(facades.Config.GetString("app.host")); err != nil {
+			facades.Log.Errorf("Route run error: %v", err)
+		}
+	}()
+
+	select {}
+
 }

@@ -5,6 +5,7 @@ vendor
 .env.*
 .history
 go.work
+go.work.sum
 
 # Golang #
 ######################
