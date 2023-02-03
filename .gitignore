@@ -2,7 +2,6 @@ latest_log
 vendor
 *.local.yaml
 .env
-.env.*
 .history
 go.work
 go.work.sum
