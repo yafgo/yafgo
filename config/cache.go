@@ -12,7 +12,7 @@ func init() {
 		// This option controls the default cache connection that gets used while
 		// using this caching library. This connection is used when another is
 		// not explicitly specified when executing a given caching function.
-		"default": config.Env("CACHE_STORE", "redis"),
+		"default": config.Env("CACHE_STORE", "memory"),
 
 		// Cache Stores
 		//
@@ -21,6 +21,9 @@ func init() {
 		// same cache driver to group types of items stored in your caches.
 		// Available Drivers: "redis", "custom"
 		"stores": map[string]any{
+			"memory": map[string]any{
+				"driver": "memory",
+			},
 			"redis": map[string]any{
 				"driver":     "redis",
 				"connection": "default",
