@@ -15,7 +15,7 @@ func init() {
 			"mysql": map[string]any{
 				"driver":   "mysql",
 				"host":     config.Env("DB_HOST", "127.0.0.1"),
-				"port":     config.Env("DB_PORT", "3306"),
+				"port":     config.Env("DB_PORT", 3306),
 				"database": config.Env("DB_DATABASE", "forge"),
 				"username": config.Env("DB_USERNAME", ""),
 				"password": config.Env("DB_PASSWORD", ""),
@@ -25,12 +25,12 @@ func init() {
 			"postgresql": map[string]any{
 				"driver":   "postgresql",
 				"host":     config.Env("DB_HOST", "127.0.0.1"),
-				"port":     config.Env("DB_PORT", "3306"),
+				"port":     config.Env("DB_PORT", 5432),
 				"database": config.Env("DB_DATABASE", "forge"),
 				"username": config.Env("DB_USERNAME", ""),
 				"password": config.Env("DB_PASSWORD", ""),
 				"sslmode":  "disable",
-				"timezone": "UTC", //Asia/Shanghai
+				"timezone": "UTC", // Asia/Shanghai
 			},
 			"sqlite": map[string]any{
 				"driver":   "sqlite",
@@ -39,7 +39,7 @@ func init() {
 			"sqlserver": map[string]any{
 				"driver":   "sqlserver",
 				"host":     config.Env("DB_HOST", "127.0.0.1"),
-				"port":     config.Env("DB_PORT", "3306"),
+				"port":     config.Env("DB_PORT", 1433),
 				"database": config.Env("DB_DATABASE", "forge"),
 				"username": config.Env("DB_USERNAME", ""),
 				"password": config.Env("DB_PASSWORD", ""),
