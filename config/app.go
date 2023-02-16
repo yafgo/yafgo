@@ -1,14 +1,21 @@
 package config
 
 import (
+	"github.com/yafgo/framework/auth"
 	"github.com/yafgo/framework/cache"
 	"github.com/yafgo/framework/console"
 	"github.com/yafgo/framework/contracts"
+	"github.com/yafgo/framework/database"
+	"github.com/yafgo/framework/event"
 	"github.com/yafgo/framework/facades"
 	"github.com/yafgo/framework/filesystem"
+	"github.com/yafgo/framework/grpc"
 	"github.com/yafgo/framework/http"
 	"github.com/yafgo/framework/log"
+	"github.com/yafgo/framework/mail"
+	"github.com/yafgo/framework/queue"
 	"github.com/yafgo/framework/route"
+	"github.com/yafgo/framework/schedule"
 	"github.com/yafgo/framework/validation"
 
 	"github.com/yafgo/yafgo/app/providers"
@@ -64,19 +71,26 @@ func init() {
 		"providers": []contracts.ServiceProvider{
 			&log.ServiceProvider{},
 			&console.ServiceProvider{},
+			&database.ServiceProvider{},
 			&cache.ServiceProvider{},
 			&http.ServiceProvider{},
 			&route.ServiceProvider{},
+			&schedule.ServiceProvider{},
+			&event.ServiceProvider{},
+			&queue.ServiceProvider{},
+			&grpc.ServiceProvider{},
+			&mail.ServiceProvider{},
+			&auth.ServiceProvider{},
 			&filesystem.ServiceProvider{},
 			&validation.ServiceProvider{},
 
 			&providers.AppServiceProvider{},
 			&providers.AuthServiceProvider{},
 			&providers.RouteServiceProvider{},
-			// &providers.GrpcServiceProvider{},
+			&providers.GrpcServiceProvider{},
 			&providers.ConsoleServiceProvider{},
-			// &providers.QueueServiceProvider{},
-			// &providers.EventServiceProvider{},
+			&providers.QueueServiceProvider{},
+			&providers.EventServiceProvider{},
 			&providers.ValidationServiceProvider{},
 		},
 	})
