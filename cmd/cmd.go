@@ -6,8 +6,8 @@ import (
 
 	"github.com/gookit/color"
 	"github.com/manifoldco/promptui"
-	"github.com/yafgo/toy/consts"
-	"github.com/yafgo/toy/internal/project"
+	"github.com/yafgo/yafgo/consts"
+	"github.com/yafgo/yafgo/internal/project"
 )
 
 // Tpl Project Layout Template
@@ -19,7 +19,7 @@ type Tpl interface {
 // Execute make project
 func Execute() {
 
-	color.Successf("[GoToyCli] v%s\n\n", consts.Version)
+	color.Successf("[Yafgo] v%s\n\n", consts.Version)
 
 	// eg: "github.com/you/project"  "my_project"
 	moduleName, _ := readProjectName()
@@ -73,7 +73,6 @@ func selectTemplate() (tpl Tpl, err error) {
 		Desc string
 		Flag string
 	}{
-		{Name: "[Toy]     ", Desc: "Toy Layout", Flag: "toyLayout"},
 		{Name: "[Yafgo]   ", Desc: "Yafgo Layout", Flag: "yafgo"},
 		{Name: "[Goravel] ", Desc: "Goravel", Flag: "goravel"},
 	}
@@ -99,10 +98,8 @@ func selectTemplate() (tpl Tpl, err error) {
 	}
 
 	switch projects[i].Flag {
-	case "toyLayout":
-		tpl = new(project.TplToyLayout)
 	case "yafgo":
-		tpl = new(project.TplYafgo)
+		tpl = new(project.TplYafgoLayout)
 	case "goravel":
 		tpl = new(project.TplGoravel)
 	}

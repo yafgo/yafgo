@@ -10,26 +10,26 @@ import (
 
 	"github.com/gookit/color"
 	"github.com/manifoldco/promptui"
-	"github.com/yafgo/toy/internal/pkg/file"
+	"github.com/yafgo/yafgo/internal/pkg/file"
 )
 
-type TplYafgo struct {
+type TplYafgoLayout struct {
 	repo string
 }
 
 const (
-	YAFGO_REPO_GITHUB = "https://github.com/yafgo/yafgo.git"
-	YAFGO_REPO_GITEE  = "https://gitee.com/yafgo/yafgo.git"
+	TOY_LAYOUT_REPO_GITHUB = "https://github.com/yafgo/yafgo-layout.git"
+	TOY_LAYOUT_REPO_GITEE  = "https://gitee.com/yafgo/yafgo-layout.git"
 )
 
-func (rp *TplYafgo) Name() string {
+func (rp *TplYafgoLayout) Name() string {
 	return "YafgoLayout"
 }
 
 // MakeProject
 //
 //	name: like "github.com/you/project" or "my_project"
-func (rp *TplYafgo) MakeProject(name string) (err error) {
+func (rp *TplYafgoLayout) MakeProject(name string) (err error) {
 
 	// select repo
 	rp.repo, err = rp.selectRepo()
@@ -93,17 +93,6 @@ func (rp *TplYafgo) MakeProject(name string) (err error) {
 		}
 	}
 
-	// create .env
-	{
-		cmd := exec.Command("cp", ".env.example", ".env")
-		color.Grayln(cmd.String())
-		err = cmd.Run()
-		if err != nil {
-			color.Errorln("create .env fail")
-			return
-		}
-	}
-
 	// git init
 	{
 		cmd := exec.Command("git", "init")
@@ -118,19 +107,19 @@ func (rp *TplYafgo) MakeProject(name string) (err error) {
 	return
 }
 
-func (rp *TplYafgo) selectRepo() (repo string, err error) {
+func (rp *TplYafgoLayout) selectRepo() (repo string, err error) {
 	repos := []struct {
 		Name string
 		Desc string
 		Repo string
 	}{
-		{Name: "[Github]", Desc: "github.com", Repo: YAFGO_REPO_GITHUB},
-		{Name: "[Gitee] ", Desc: "gitee.com", Repo: YAFGO_REPO_GITEE},
+		{Name: "[Github]", Desc: "github.com", Repo: TOY_LAYOUT_REPO_GITHUB},
+		{Name: "[Gitee] ", Desc: "gitee.com", Repo: TOY_LAYOUT_REPO_GITEE},
 	}
 
 	templates := &promptui.SelectTemplates{
 		Label:    "{{ . }}?",
-		Active:   "\U0001F336 {{ .Name | cyan }} ({{ .Desc | red }})",
+		Active:   "\U0001F336 {{ .Name | cyan }} ({{ .Desc | red }}) - {{ .Repo | magenta }}",
 		Inactive: "  {{ .Name | cyan }} ({{ .Desc | red }})",
 		Selected: "\U0001F336 {{ .Name | red | cyan }}",
 	}
@@ -152,12 +141,12 @@ func (rp *TplYafgo) selectRepo() (repo string, err error) {
 	return
 }
 
-func (rp *TplYafgo) renameModule(moduleName, dir string) (err error) {
+func (rp *TplYafgoLayout) renameModule(moduleName, dir string) (err error) {
 
 	err = file.WalkFiles(dir, func(elem string) error {
 		if strings.HasSuffix(elem, ".go") || path.Base(elem) == "go.mod" {
 			// *.go, go.mod
-			err := file.ReplaceString(elem, "github.com/yafgo/yafgo", moduleName)
+			err := file.ReplaceString(elem, "yafgo/yafgo-layout", moduleName)
 			return err
 		}
 

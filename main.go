@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/yafgo/toy/cmd"
+	"github.com/yafgo/yafgo/cmd"
 )
 
 func main() {

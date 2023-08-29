@@ -9,7 +9,7 @@ import (
 	"strings"
 
 	"github.com/gookit/color"
-	"github.com/yafgo/toy/internal/pkg/file"
+	"github.com/yafgo/yafgo/internal/pkg/file"
 )
 
 type TplGoravel struct {
