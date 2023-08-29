@@ -7,7 +7,7 @@
 - [yafgo-layout](https://github.com/yafgo/yafgo-layout.git)
 - [goravel](https://github.com/goravel/goravel.git)
 
-## 环境要求:
+## 环境要求
 
 - `git`
 - `golang` _(>= 1.18)_
