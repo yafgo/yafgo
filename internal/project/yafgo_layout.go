@@ -144,8 +144,8 @@ func (rp *TplYafgoLayout) selectRepo() (repo string, err error) {
 func (rp *TplYafgoLayout) renameModule(moduleName, dir string) (err error) {
 
 	err = file.WalkFiles(dir, func(elem string) error {
-		if strings.HasSuffix(elem, ".go") || path.Base(elem) == "go.mod" {
-			// *.go, go.mod
+		if strings.HasSuffix(elem, ".go") || strings.HasSuffix(elem, ".gotpl") || path.Base(elem) == "go.mod" {
+			// *.go, *.gotpl, go.mod
 			err := file.ReplaceString(elem, "yafgo/yafgo-layout", moduleName)
 			return err
 		}
