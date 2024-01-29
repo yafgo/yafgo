@@ -21,6 +21,7 @@ func NewTplYafgoLayoutWeb() *TplYafgoLayoutWeb {
 }
 
 type TplYafgoLayoutWeb struct {
+	TplBase
 	repo string
 
 	REPO_GITHUB string

@@ -66,7 +66,6 @@ func (rp *TplGoravel) MakeProject(name string) (err error) {
 
 	// delete .git
 	_ = os.RemoveAll(path.Join(projectDir, ".git"))
-	_ = os.RemoveAll(path.Join(projectDir, "LICENSE"))
 
 	// replace moduleName
 	rp.renameModule(name, projectDir)
