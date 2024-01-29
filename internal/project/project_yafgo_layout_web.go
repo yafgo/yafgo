@@ -1,35 +1,32 @@
 package project
 
 import (
-	"errors"
 	"fmt"
 	"os"
-	"os/exec"
 	"path"
+	"path/filepath"
 	"strings"
 
 	"github.com/gookit/color"
-	"github.com/manifoldco/promptui"
 	"github.com/yafgo/yafgo/internal/pkg/file"
 )
 
 func NewTplYafgoLayoutWeb() *TplYafgoLayoutWeb {
-	return &TplYafgoLayoutWeb{
-		REPO_GITHUB: "https://github.com/yafgo/yafgo-layout-web.git",
-		REPO_GITEE:  "https://gitee.com/yafgo/yafgo-layout-web.git",
+	tpl := &TplYafgoLayoutWeb{
+		TplBase: TplBase{
+			REPO_GITHUB: "https://github.com/yafgo/yafgo-layout-web.git",
+			REPO_GITEE:  "https://gitee.com/yafgo/yafgo-layout-web.git",
+		},
 	}
+	return tpl
 }
 
 type TplYafgoLayoutWeb struct {
 	TplBase
-	repo string
-
-	REPO_GITHUB string
-	REPO_GITEE  string
 }
 
 func (rp *TplYafgoLayoutWeb) Name() string {
-	return "YafgoLayout"
+	return "YafgoLayoutWeb"
 }
 
 // MakeProject
@@ -38,74 +35,52 @@ func (rp *TplYafgoLayoutWeb) Name() string {
 func (rp *TplYafgoLayoutWeb) MakeProject(name string) (err error) {
 
 	// select repo
-	rp.repo, err = rp.selectRepo()
-	if err != nil {
+	if err = rp.selectRepo(); err != nil {
 		return
 	}
-
-	// eg: "project" "my_project"
-	projectName := path.Base(name)
-	// workDir
-	cwd, _ := os.Getwd()
-	projectDir := path.Join(cwd, projectName)
 
 	defer func() {
 		if err != nil {
 			os.Exit(1)
 		}
 
-		fmt.Println(color.Success.Sprint("创建成功: "), projectName)
+		fmt.Println(color.Success.Sprint("创建成功: "), rp.dirName)
 	}()
 
-	if file.Exists(projectDir) {
-		fmt.Println(color.Warn.Sprint("项目已存在: "), projectName)
-		err = errors.New("project already exists")
+	// 初始化项目信息
+	if err = rp.initProjectDir(name); err != nil {
 		return
 	}
 
 	// clone project
-	{
-		fmt.Println(color.Gray.Sprint("创建项目: "), projectName)
-		cmd := exec.Command("git", "clone", rp.repo, projectName)
-		color.Grayln(cmd.String())
-		err = cmd.Run()
-		if err != nil {
-			color.Redf("创建失败, 请检查 [%v] 访问状况并重试!\n", rp.repo)
-			return
-		}
+	if err = rp.cloneProject(); err != nil {
+		return
 	}
 
 	// delete .git
-	_ = os.RemoveAll(path.Join(projectDir, ".git"))
-	_ = os.RemoveAll(path.Join(projectDir, "LICENSE"))
-
-	// replace moduleName
-	rp.renameModule(name, projectDir+"/server")
-
-	// chdir
-	if _err := os.Chdir(projectDir); _err != nil {
-		err = _err
-		return
-	}
-
-	// gofmt
-	{
-		cmd := exec.Command("gofmt", "-w", ".")
-		color.Grayln(cmd.String())
-		err = cmd.Run()
-		if err != nil {
-			color.Errorln("gofmt fail")
-			return
-		}
-	}
+	_ = os.RemoveAll(filepath.Join(rp.projectDir, ".git"))
+	_ = os.RemoveAll(filepath.Join(rp.projectDir, "LICENSE"))
 
 	// git init
+	if err = rp.runGitInit(); err != nil {
+		return
+	}
+
+	// go项目代码额外处理
 	{
-		cmd := exec.Command("git", "init")
-		color.Grayln(cmd.String())
-		err = cmd.Run()
-		if err != nil {
-			color.Errorln("git init fail")
+		// chdir
+		dirBackend := filepath.Join(rp.projectDir, "server")
+		if err = os.Chdir(dirBackend); err != nil {
+			return
+		}
+
+		// replace moduleName
+		if err = rp.renameModule(dirBackend); err != nil {
+			return
+		}
+
+		// gofmt
+		if err = rp.runGoFmt(); err != nil {
 			return
 		}
 	}
@@ -113,46 +88,12 @@ func (rp *TplYafgoLayoutWeb) MakeProject(name string) (err error) {
 	return
 }
 
-func (rp *TplYafgoLayoutWeb) selectRepo() (repo string, err error) {
-	repos := []struct {
-		Name string
-		Desc string
-		Repo string
-	}{
-		{Name: "[Github]", Desc: "github.com", Repo: rp.REPO_GITHUB},
-		{Name: "[Gitee] ", Desc: "gitee.com", Repo: rp.REPO_GITEE},
-	}
-
-	templates := &promptui.SelectTemplates{
-		Label:    "{{ . }}?",
-		Active:   "\U0001F336 {{ .Name | cyan }} ({{ .Desc | red }}) - {{ .Repo | magenta }}",
-		Inactive: "  {{ .Name | cyan }} ({{ .Desc | red }})",
-		Selected: "\U0001F336 {{ .Name | red | cyan }}",
-	}
-
-	prompt := promptui.Select{
-		Label:     "Select Repo",
-		Items:     repos,
-		Templates: templates,
-	}
-
-	i, _, _err := prompt.Run()
-
-	if _err != nil {
-		err = _err
-		return
-	}
-
-	repo = repos[i].Repo
-	return
-}
-
-func (rp *TplYafgoLayoutWeb) renameModule(moduleName, dir string) (err error) {
+func (rp *TplYafgoLayoutWeb) renameModule(dir string) (err error) {
 
 	err = file.WalkFiles(dir, func(elem string) error {
 		if strings.HasSuffix(elem, ".go") || strings.HasSuffix(elem, ".gotpl") || path.Base(elem) == "go.mod" {
 			// *.go, *.gotpl, go.mod
-			err := file.ReplaceString(elem, "yafgo/yafgo-layout", moduleName)
+			err := file.ReplaceString(elem, "yafgo/yafgo-layout", rp.moduleName)
 			return err
 		}
 
