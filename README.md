@@ -5,6 +5,7 @@
 支持创建的项目模板:
 
 - [yafgo-layout](https://github.com/yafgo/yafgo-layout.git)
+- [yafgo-layout-web](https://github.com/yafgo/yafgo-layout-web.git)
 - [goravel](https://github.com/goravel/goravel.git)
 
 ## 环境要求
@@ -25,6 +26,7 @@ yafgo
 ✔ Project Name: my_project
 Use the arrow keys to navigate: ↓ ↑ → ←
 Select Template?
-     [Yafgo]    (Yafgo Layout)
+  🌶 [Yafgo]    (Yafgo 后端项目模板)
+     [YafgoWeb] (Yafgo 前后端项目模板)
      [Goravel]  (Goravel)
 ```
