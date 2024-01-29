@@ -61,6 +61,10 @@ func (rp *TplYafgoLayoutWeb) MakeProject(name string) (err error) {
 	_ = os.RemoveAll(filepath.Join(rp.projectDir, ".git"))
 	_ = os.RemoveAll(filepath.Join(rp.projectDir, "LICENSE"))
 
+	// chdir
+	if err = os.Chdir(rp.projectDir); err != nil {
+		return
+	}
 	// git init
 	if err = rp.runGitInit(); err != nil {
 		return
