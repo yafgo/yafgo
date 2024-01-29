@@ -73,7 +73,7 @@ func selectTemplate() (tpl Tpl, err error) {
 		Desc string
 		Flag string
 	}{
-		{Name: "[Yafgo]   ", Desc: "Yafgo Layout", Flag: "yafgo"},
+		{Name: "[Yafgo]   ", Desc: "Yafgo 后端项目模板", Flag: "yafgo"},
 		{Name: "[YafgoWeb]", Desc: "Yafgo 前后端项目模板", Flag: "yafgoWeb"},
 		{Name: "[Goravel] ", Desc: "Goravel", Flag: "goravel"},
 	}
@@ -104,7 +104,7 @@ func selectTemplate() (tpl Tpl, err error) {
 	case "yafgoWeb":
 		tpl = project.NewTplYafgoLayoutWeb()
 	case "goravel":
-		tpl = new(project.TplGoravel)
+		tpl = project.NewTplGoravel()
 	}
 
 	return
