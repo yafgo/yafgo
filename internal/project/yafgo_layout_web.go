@@ -13,28 +13,28 @@ import (
 	"github.com/yafgo/yafgo/internal/pkg/file"
 )
 
-func NewTplYafgoLayout() *TplYafgoLayout {
-	return &TplYafgoLayout{
-		REPO_GITHUB: "https://github.com/yafgo/yafgo-layout.git",
-		REPO_GITEE:  "https://gitee.com/yafgo/yafgo-layout.git",
+func NewTplYafgoLayoutWeb() *TplYafgoLayoutWeb {
+	return &TplYafgoLayoutWeb{
+		REPO_GITHUB: "https://github.com/yafgo/yafgo-layout-web.git",
+		REPO_GITEE:  "https://gitee.com/yafgo/yafgo-layout-web.git",
 	}
 }
 
-type TplYafgoLayout struct {
+type TplYafgoLayoutWeb struct {
 	repo string
 
 	REPO_GITHUB string
 	REPO_GITEE  string
 }
 
-func (rp *TplYafgoLayout) Name() string {
+func (rp *TplYafgoLayoutWeb) Name() string {
 	return "YafgoLayout"
 }
 
 // MakeProject
 //
 //	name: like "github.com/you/project" or "my_project"
-func (rp *TplYafgoLayout) MakeProject(name string) (err error) {
+func (rp *TplYafgoLayoutWeb) MakeProject(name string) (err error) {
 
 	// select repo
 	rp.repo, err = rp.selectRepo()
@@ -79,7 +79,7 @@ func (rp *TplYafgoLayout) MakeProject(name string) (err error) {
 	_ = os.RemoveAll(path.Join(projectDir, "LICENSE"))
 
 	// replace moduleName
-	rp.renameModule(name, projectDir)
+	rp.renameModule(name, projectDir+"/server")
 
 	// chdir
 	if _err := os.Chdir(projectDir); _err != nil {
@@ -112,7 +112,7 @@ func (rp *TplYafgoLayout) MakeProject(name string) (err error) {
 	return
 }
 
-func (rp *TplYafgoLayout) selectRepo() (repo string, err error) {
+func (rp *TplYafgoLayoutWeb) selectRepo() (repo string, err error) {
 	repos := []struct {
 		Name string
 		Desc string
@@ -146,7 +146,7 @@ func (rp *TplYafgoLayout) selectRepo() (repo string, err error) {
 	return
 }
 
-func (rp *TplYafgoLayout) renameModule(moduleName, dir string) (err error) {
+func (rp *TplYafgoLayoutWeb) renameModule(moduleName, dir string) (err error) {
 
 	err = file.WalkFiles(dir, func(elem string) error {
 		if strings.HasSuffix(elem, ".go") || strings.HasSuffix(elem, ".gotpl") || path.Base(elem) == "go.mod" {
